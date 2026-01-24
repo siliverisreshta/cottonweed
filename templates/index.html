@@ -1103,6 +1103,7 @@
     if (file && file.size > MAX_SIZE) {
       alert('Image must be under 10MB');
       input.value = '';
+        return;
     }
   });
             const fileInput = document.getElementById('imageFile');
@@ -1231,3 +1232,4 @@
 </body>
 
 </html>
+
