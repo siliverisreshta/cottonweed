@@ -1094,6 +1094,17 @@
         // Form submission (original functionality preserved)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+              const input = document.getElementById('imageFile');
+
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+    if (file && file.size > MAX_SIZE) {
+      alert('Image must be under 10MB');
+      input.value = '';
+    }
+  });
             const fileInput = document.getElementById('imageFile');
             if (!fileInput.files.length) {
                 alert('Please select an image first!');
@@ -1218,4 +1229,5 @@
         });
     </script>
 </body>
+
 </html>
