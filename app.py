@@ -64,7 +64,7 @@ def crop_and_save(img, boxes, scores, class_ids):
         })
 
     return crops
-@app.route('/')
+@app.route('/ping')
 def fet():
     return "Hello"
 
@@ -138,3 +138,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     # Must listen on 0.0.0.0 for external access
     app.run(host='0.0.0.0', port=port)
+
