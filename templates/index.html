@@ -969,13 +969,25 @@
         });
 
         // Show form when file is selected
-        document.getElementById('imageFile').addEventListener('change', function () {
-            if (this.files.length > 0) {
-                form.style.display = 'flex';
-                fileUploadBtn.style.display = 'none';
-                cameraBtn.style.display = 'none';
-            }
-        });
+       // Show form when file is selected
+document.getElementById('imageFile').addEventListener('change', function () {
+    const file = this.files[0];
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB limit
+
+    if (file) {
+        // Validation: If file is larger than 10MB, reject it immediately
+        if (file.size > MAX_SIZE) {
+            alert(`File is too large! Please select an image under 10MB. (Current: ${(file.size / (1024 * 1024)).toFixed(2)}MB)`);
+            this.value = ''; // Clears the selection
+            return; // Stops the function here
+        }
+
+        // If validation passes, show the UI for analysis
+        form.style.display = 'flex';
+        fileUploadBtn.style.display = 'none';
+        cameraBtn.style.display = 'none';
+    }
+});
 
         // Camera functionality
         cameraBtn.addEventListener('click', async () => {
