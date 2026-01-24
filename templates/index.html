@@ -1008,24 +1008,26 @@
                             return;
                         }
 
-                        data.crops.forEach(crop => {
-                            const div = document.createElement('div');
-                            div.className = 'crop-card';
-                            div.innerHTML = `
-                                <img class="crop-img" src="data:image/jpeg;base64,${crop.image}" alt="${crop.weed_name}" />
-                                <div class="crop-content">
-                                    <h4>${crop.weed_name}
-                                        <span class="confidence">${(crop.confidence*100).toFixed(1)}%</span>
-                                    </h4>
-                                    <div class="crop-details">
-                                        <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage || 'Moderate to severe'}</p>
-                                        <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide || 'Glyphosate-based herbicide'}</p>
-                                        <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details || 'Common weed affecting cotton yield'}</p>
-                                    </div>
-                                </div>
-                            `;
-                            resultDiv.appendChild(div);
-                        });
+                      data.crops.forEach(crop => {
+    const div = document.createElement('div');
+    div.className = 'crop-card';
+    div.innerHTML = `
+        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+        <div class="crop-content">
+            <h4>
+                ${crop.weed_name}
+                <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+            </h4>
+            <div class="crop-details">
+                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
+                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
+                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
+            </div>
+        </div>
+    `;
+    resultDiv.appendChild(div);
+});
+
                         
                         // Reset upload options
                         form.style.display = 'none';
@@ -1094,6 +1096,18 @@
         // Form submission (original functionality preserved)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+              const input = document.getElementById('imageFile');
+
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+    if (file && file.size > MAX_SIZE) {
+      alert('Image must be under 10MB');
+      input.value = '';
+      return;
+    }
+  });
             const fileInput = document.getElementById('imageFile');
             if (!fileInput.files.length) {
                 alert('Please select an image first!');
@@ -1120,14 +1134,18 @@
                     if (!response.ok) throw new Error('Detection failed');
                     
                     const data = await response.json();
+if (!data.imageUrl) {
+    throw new Error("Invalid server response");
+}
 
                     // Hide loading
                     loading.style.display = 'none';
 
                     // Full annotated image
                     if (data.image) {
-                        fullImage.src = `data:image/jpeg;base64,${data.image}`;
-                        fullImage.style.display = 'block';
+                       fullImage.src = data.imageUrl;
+                       fullImage.style.display = 'block';
+
                     }
 
                     // Cropped weeds with details
@@ -1142,25 +1160,26 @@
                         return;
                     }
 
-                    data.crops.forEach(crop => {
-                        const div = document.createElement('div');
-                        div.className = 'crop-card';
-                        div.innerHTML = `
-                            <img class="crop-img" src="data:image/jpeg;base64,${crop.image}" alt="${crop.weed_name}" />
-                            <div class="crop-content">
-                                <h4>${crop.weed_name}
-                                    <span class="confidence">${(crop.confidence*100).toFixed(1)}%</span>
-                                </h4>
-                                <div class="crop-details">
-                                    <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage || 'Moderate to severe'}</p>
-                                    <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide || 'Glyphosate-based herbicide'}</p>
-                                    <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details || 'Common weed affecting cotton yield'}</p>
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.appendChild(div);
-                    });
-                    
+                  data.crops.forEach(crop => {
+    const div = document.createElement('div');
+    div.className = 'crop-card';
+    div.innerHTML = `
+        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+        <div class="crop-content">
+            <h4>
+                ${crop.weed_name}
+                <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+            </h4>
+            <div class="crop-details">
+                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
+                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
+                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
+            </div>
+        </div>
+    `;
+    resultDiv.appendChild(div);
+});
+
                     // Reset upload options
                     form.style.display = 'none';
                     fileUploadBtn.style.display = 'flex';
