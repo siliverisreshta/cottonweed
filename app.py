@@ -77,6 +77,8 @@ def guide():
 def fet():
     return "Hello"
 
+
+
 @app.route('/detect_crop', methods=['POST'])
 def detect_crop():
     if 'file' not in request.files:
@@ -137,5 +139,11 @@ def detect_crop():
         "imageUrl": url_for('static', filename=f"output/{output_filename}"),
         "crops": crops
     })
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    # Render provides a PORT environment variable
+    port = int(os.environ.get("PORT", 10000))
+    # Must listen on 0.0.0.0 for external access
+    app.run(host='0.0.0.0', port=port)
+
+
