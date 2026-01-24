@@ -66,9 +66,16 @@ def crop_and_save(img, boxes, scores, class_ids):
     return crops
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", active_page="home")
+
+@app.route("/guide")
+def guide():
+    return render_template("guide.html", active_page="guide")
+@app.route('/ping')
+def fet():
+    return "Hello"
 
 @app.route('/detect_crop', methods=['POST'])
 def detect_crop():

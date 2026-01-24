@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmer Weed Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #f2f9f4, #ececec);
+            margin: 0;
+            padding-top: 0;
+        }
+
+        /* Google Translate Fixes */
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+        
+        .goog-te-menu-frame {
+            max-width: 100% !important;
+        }
+        
+        .goog-te-menu2 {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Exclude images from translation */
+        .card img {
+            -webkit-user-drag: none;
+            user-select: none;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 100px;
+            color: #040404;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search Box */
+        .search-box {
+            width: 85%;
+            display: block;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #a5d6a7;
+            font-size: 18px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: #4caf50;
+            box-shadow: 0px 6px 14px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Cards Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40vw, 1fr));
+            padding: 20px;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #dcedc8;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin: 15px 15px 5px;
+            color: #000000;
+        }
+
+        .desc {
+            margin: 0 15px;
+            color: #555;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .treat-title {
+            margin: 15px 15px 5px;
+            font-weight: 600;
+            color: #1b5e20;
+            font-size: 16px;
+        }
+
+        .card ul {
+            margin: 0 0 15px 30px;
+            padding: 0;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .card li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #ffffff;
+            background: #3f1474;
+            font-weight: 500;
+            margin-top: 40px;
+            border-top: 2px solid #c8e6c9;
+        }
+
+        /* Language Selector Styles - HIDDEN since we're using Google's widget */
+        .lang-select {
+            display: none; /* Hide custom selector, using Google's instead */
+        }
+
+        /* Google Translate Widget Styling */
+        #google_translate_element {
+            position: fixed;
+            bottom: 5vh;
+            right: 2%;
+            z-index: 1000;
+            background: white;
+            border-radius: 6px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .goog-te-gadget-simple {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        .goog-te-menu-value {
+            color: #333 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 14px !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .title {
+                margin-top: 120px;
+                font-size: 28px;
+            }
+            
+            #google_translate_element {
+                top: 100px;
+                right: 5%;
+            }
+            
+            .search-box {
+                width: 90%;
+                font-size: 16px;
+                padding: 12px;
+            }
+            
+            .grid {
+                padding: 15px;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 24px;
+                margin-top: 110px;
+            }
+            
+            #google_translate_element {
+                top: 95px;
+                right: 3%;
+            }
+            
+            .goog-te-menu-value {
+                font-size: 12px !important;
+            }
+        }
+    </style>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        // Initialize Google Translate AFTER content is loaded
+        function googleTranslateElementInit() {
+            // Wait a bit for dynamic content to load
+            setTimeout(function() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,hi,te,ta,bn,gu',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false,
+                    disableAutoTranslation: false
+                }, 'google_translate_element');
+                
+                // Force translation after content loads
+                setTimeout(triggerTranslation, 500);
+            }, 1000);
+        }
+        
+        function triggerTranslation() {
+            // Get current language from Google Translate
+            var iframe = document.querySelector('.goog-te-banner-frame');
+            if (iframe) {
+                iframe.style.display = 'none';
+            }
+            
+            // Trigger translation on all elements
+            document.body.classList.add('translated');
+        }
+    </script>
+</head>
+
+<body>
+    {% include 'partials/nav.html' %}
+    
+    <!-- Google Translate Element -->
+    <div id="google_translate_element"></div>
+    
+    <!-- Page Content -->
+    <div class="title">Welcome to Weed Guide</div>
+    
+    <!-- Search -->
+    <input id="searchInput" class="search-box" type="text" 
+           placeholder="Search weed name (e.g., Parthenium, Nutgrass)..." 
+           onkeyup="searchWeeds()" />
+    
+    <!-- Cards Container - Load content statically first for Google Translate -->
+   <div id="weedContainer" class="grid">
+    <!-- Static content that Google can translate -->
+<div id="weedContainer" class="grid">
+    <!-- Static content that Google can translate -->
+    <div class="card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxNbJpWy4GdMpEawkSRGwxKWPAX0P7oRpIhbpBVnoUvw1Mj0ax66OVhb1HCCEbao8xt8JOW5gUWRlDkVwSuX0brDUA8ee2h62FcDsLAsk&s=10" 
+             alt="Parthenium Weed">
+        <h2>Parthenium (Gajar Ghas)</h2>
+        <p class="desc">• White small flowers • Leaves look like carrot leaves • Strong bad smell when crushed • Causes allergies</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>Metsulfuron-methyl 20 WP: 4g in 10L water</li>
+            <li>Spray when weed is small (15-20 days old)</li>
+            <li>Wear gloves and mask - can cause skin rash</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <img src="https://apps.lucidcentral.org/pppw_v11/images/entities/nutgrass_453/cyperus_rotundus_by_kadavoor.jpeg" 
+             alt="Nutgrass">
+        <h2>Nutgrass (Motha)</h2>
+        <p class="desc">• Purple-brown flower tops • Triangular stems • Deep underground roots (motha) • Very hard to remove</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>Halosulfuron-methyl 75 WG: 70g per acre</li>
+            <li>Spray twice - after 15 days gap</li>
+            <li>Summer deep plowing helps control</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <img src="https://rukminim2.flixcart.com/image/480/640/xif0q/plant-seed/i/a/2/300-th-26-ug-chenopodium-bathua-300seeds-farmonix-original-imagv758vfxqfnu2.jpeg?q=90" 
+             alt="Bathua">
+        <h2>Bathua (Chilrani)</h2>
+        <p class="desc">• White powder on leaves • Diamond-shaped leaves • Grows quickly after rains • Many seeds in soil</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>Pendimethalin 30 EC: 1L/acre before sowing</li>
+            <li>Glyphosate: 1.2-1.6L/acre after crop</li>
+            <li>Remove by hand before flowering</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <img src="https://weedid.missouri.edu/images/images_optimized/2057optimized.jpg" 
+             alt="Johnson Grass">
+        <h2>Johnson Grass (Jangli Jowar)</h2>
+        <p class="desc">• Looks like jowar crop • White line in leaf center • Purple flowers • Underground roots spread fast</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>Glyphosate: 2L/acre (spot spray only)</li>
+            <li>Cut repeatedly to weaken roots</li>
+            <li>Deep plow in summer heat</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <img src="https://www.flowersofindia.net/catalog/slides/Field%20Bindweed.jpg" 
+             alt="Field Bindweed">
+        <h2>Field Bindweed (Hiranpadi)</h2>
+        <p class="desc">• White-pink funnel flowers • Climbs on cotton plants • Arrow-shaped leaves • Spreads through deep roots</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>2,4-D: 1L/acre when weed is young</li>
+            <li>Pull out roots completely</li>
+            <li>Repeat control needed</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <img src="https://www.cabidigitallibrary.org/cms/10.1079/cabicompendium.56864/asset/70d07be0-1d02-4ba6-bef6-940a6b702be0/assets/graphic/56864_12.jpg" 
+             alt="Cocklebur">
+        <h2>Cocklebur (Chhota Gokhru)</h2>
+        <p class="desc">• Spiky seeds stick to clothes • Big rough leaves • Harmful for animals • Grows 3-4 feet tall</p>
+        <p class="treat-title">How to Control:</p>
+        <ul>
+            <li>Pendimethalin: 1L/acre before sowing</li>
+            <li>Remove by hand before seed forms</li>
+            <li>Clean farm tools to stop spread</li>
+        </ul>
+    </div>
+</div>
+    </div>
+    <footer>© 2026 <i style="color:yellow;padding: 0px 5px;" class="fas fa-seedling"></i>CottonWeed Ai</footer>
+
+    <script>
+        // Weed Data - for search functionality
+  const weeds = [
+    { 
+        name: "Parthenium (Congress Grass / Carrot Grass)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Parthenium_hysterophorus_-_Kolkata_2011-07-30_2334.JPG/800px-Parthenium_hysterophorus_-_Kolkata_2011-07-30_2334.JPG", 
+        description: "Easily identified by its small white flowers and deeply lobed, light green leaves that resemble carrot leaves. Highly invasive, releases chemicals that harm other plants, and causes allergies. Competes heavily for nutrients and water, drastically reducing cotton yield.",
+        identification_tips: ["Small white flowers in clusters", "Fern-like light green leaves", "Grows 1-2 meters tall", "Strong, unpleasant odor when crushed"],
+        treatments: ["Spray Metsulfuron-methyl 20 WP @ 4g / 10L water (early stage)", "Use Glyphosate 41% @ 1.5 L/acre for mature plants", "Always wear protective gloves and mask", "Spray during early growth stage for best results", "Combine with manual removal for severe infestations"] 
+    }, 
+    { 
+        name: "Purple Nutsedge (Nutgrass / Nagarmotha)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cyperus_rotundus_-_Kadavoor.jpg/800px-Cyperus_rotundus_-_Kadavoor.jpg", 
+        description: "Perennial sedge with dark green, grass-like leaves and distinctive purple-brown flower clusters. Grows from underground tubers (nuts) that can remain dormant for years. One of world's worst weeds - competes aggressively for water and nutrients.",
+        identification_tips: ["Triangular stems (sedges have edges!)", "Purple-brown seed heads", "Shiny, dark green leaves in groups of three", "Extensive network of underground tubers"],
+        treatments: ["Apply Halosulfuron-methyl 75 WG @ 70g/acre", "Use Glyphosate as directed spot treatment", "Repeat treatment after 15-20 days for regrowth", "Deep summer plowing to expose and dry tubers", "Combine herbicide with cultural practices"] 
+    }, 
+    { 
+        name: "Bathua (Lambsquarters / Pigweed)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Chenopodium_album_002.JPG/800px-Chenopodium_album_002.JPG", 
+        description: "Fast-growing broadleaf with mealy white coating on leaves (especially young leaves). Diamond-shaped leaves with toothed margins. Produces thousands of seeds that remain viable in soil for years, creating future weed problems.",
+        identification_tips: ["Mealy white powder on leaves and stems", "Diamond-shaped leaves with irregular teeth", "Greenish flower clusters at stem tips", "Reddish streaks on mature stems"],
+        treatments: ["Pendimethalin 30 EC @ 1.0 L/acre as pre-emergence", "Glyphosate 41% @ 1.2-1.6 L/acre as post-emergence", "Use hooded sprayer to protect cotton plants", "Hand weed before flowering to prevent seed set", "Maintain clean cultivation between rows"] 
+    }, 
+    { 
+        name: "Johnson Grass (Jungli Jowar)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Sorghum_halepense_inflorescence.jpg/800px-Sorghum_halepense_inflorescence.jpg", 
+        description: "Tall perennial grass resembling sorghum, with broad leaves showing prominent white midrib. Spreads aggressively through seeds and underground rhizomes. Particularly problematic as it competes fiercely for water in cotton fields.",
+        identification_tips: ["Broad leaves with conspicuous white midvein", "Large, open purplish flower panicles", "Extensive creeping rhizomes", "Can grow over 2 meters tall"],
+        treatments: ["Glyphosate 41% @ 2.0 L/acre (spot treatment)", "Sethoxydim 18.5 EC @ 400 ml/acre", "Repeated mowing to weaken rhizomes", "Deep plowing during hot summer to expose rhizomes", "Avoid fragmentation of rhizomes during cultivation"] 
+    }, 
+    { 
+        name: "Field Bindweed (Hiran Khuri / Convolvulus)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Convolvulus_arvensis_140807.jpg/800px-Convolvulus_arvensis_140807.jpg", 
+        description: "Twining vine with arrow-shaped leaves and white/pink trumpet-shaped flowers. Spreads through deep roots and seeds, wrapping around cotton plants and smothering them. Extremely difficult to control once established.",
+        identification_tips: ["White/pink trumpet-shaped flowers", "Arrowhead-shaped leaves", "Twining stems that wrap around plants", "Extensive white underground root system"],
+        treatments: ["2,4-D Ethyl Ester 38 EC @ 1.0 L/acre", "Glyphosate as directed spot application", "Repeated cutting of vines below soil surface", "Use mulch to suppress seedling emergence", "Persistent management over multiple seasons required"] 
+    }, 
+    { 
+        name: "Cocklebur (Chota Gokhru / Xanthium)", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Cocklebur.jpg/800px-Cocklebur.jpg", 
+        description: "Easily recognized by its spiny, sticky burs that cling to clothing and animal fur. Large, rough, heart-shaped leaves. Toxic to livestock and competes with cotton for space and resources. Seeds can remain dormant for years.",
+        identification_tips: ["Spiny, hooked burs that stick to clothing", "Large, rough, heart-shaped leaves", "Greenish inconspicuous flowers", "Grows 1-1.5 meters tall"],
+        treatments: ["Pendimethalin as pre-emergence @ 1.0 L/acre", "Metribuzin 70 WP @ 200g/acre", "Hand pull before burs form", "Clean farm equipment to prevent spread", "Maintain dense cotton canopy to suppress growth"] 
+    }
+];
+
+        const container = document.getElementById('weedContainer');
+        
+        // Function to rebuild cards for search (with translation support)
+        function loadWeeds(list) {
+            container.innerHTML = "";
+            list.forEach((w) => {
+                const card = `
+                    <div class="card">
+                        <img src="${w.image}" alt="${w.name}">
+                        <h2 class="notranslate">${w.name}</h2>
+                        <p class="desc">${w.description}</p>
+                        <p class="treat-title">Recommended Treatments:</p>
+                        <ul>
+                            ${w.treatments.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+            
+            // After loading, trigger Google Translate if available
+            if (window.google && window.google.translate) {
+                setTimeout(() => {
+                    if (window.google.translate.TranslateElement) {
+                        // Refresh translation
+                        document.body.dispatchEvent(new Event('translate'));
+                    }
+                }, 100);
+            }
+        }
+        
+        // Search function
+        function searchWeeds() {
+            const value = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = weeds.filter(w => w.name.toLowerCase().includes(value));
+            loadWeeds(filtered);
+        }
+        
+        // Initialize search on page load (but we already have static content)
+        document.addEventListener('DOMContentLoaded', function() {
+            // We already have static content, but we can keep the data for search
+            console.log("Guide page loaded with translation support");
+            
+            // Add notranslate class to elements that shouldn't be translated
+            document.querySelectorAll('.card img').forEach(img => {
+                img.classList.add('notranslate');
+            });
+        });
+        
+        // Listen for translation events
+        document.addEventListener('DOMSubtreeModified', function() {
+            // When content changes (like after search), help Google Translate
+            if (window.google && window.google.translate) {
+                setTimeout(() => {
+                    // Mark dynamic content for translation
+                    document.querySelectorAll('.card h2, .desc, .treat-title, .card li').forEach(el => {
+                        if (!el.classList.contains('notranslate')) {
+                            el.classList.add('notranslate');
+                        }
+                    });
+                }, 100);
+            }
+        }, false);
+    </script>
+    
+    <!-- Load Google Translate Script -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-seedling"></i>
+        <span>CottonWeed AI</span>
+    </div>
+    
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Navigation Links -->
+    <div class="nav-links" id="navLinks">
+        <!-- HOME -->
+        <a href="/" class="{{ 'active' if active_page == 'home' else '' }}">
+            <i class="fas fa-home"></i> Home
+        </a>
+
+        <!-- DETECT -->
+        {% if active_page == 'home' %}
+        <a href="#detect" class="detect-link">
+            <i class="fas fa-camera"></i> Detect
+        </a>
+        {% else %}
+        <a href="/#detect" class="detect-link">
+            <i class="fas fa-camera"></i> Detect
+        </a>
+        {% endif %}
+
+        <!-- GUIDE -->
+        <a href="/guide" class="{{ 'active' if active_page == 'guide' else '' }}">
+            <i class="fas fa-star"></i> Guide
+        </a>
+    </div>
+</nav>
+<style>
+    /* NAVBAR STYLES - ADD THIS TO nav.html */
+    .navbar {
+        background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+        color: #fff;
+        padding: 1rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(106, 27, 154, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 99999;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .logo i {
+        color: #ffeb3b;
+        font-size: 2rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 8px;
+    }
+
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .nav-links a.active {
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        z-index: 100000;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Responsive Design */
+    @media(max-width: 768px) {
+        .navbar {
+            flex-direction: row;
+            padding: 1rem;
+            position:sticky;
+        }
+
+        .menu-toggle {
+            display: block !important;
+        }
+
+        .nav-links {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            max-height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .nav-links a {
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:last-child {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<script>
+// NAVIGATION MENU FUNCTIONALITY
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    // If elements don't exist (e.g., on guide page), exit early
+    if (!menuToggle || !navLinks) return;
+    
+    // Toggle menu visibility
+    menuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        navLinks.classList.toggle('active');
+        
+        // Change icon based on state
+        if (navLinks.classList.contains('active')) {
+            menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+            menuToggle.setAttribute('aria-expanded', 'true');
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = 'hidden';
+        } else {
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function() {
+            // Close mobile menu
+            navLinks.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = 'auto';
+            
+            // Handle hash links for smooth scrolling
+            const href = this.getAttribute('href');
+            if (href.includes('#')) {
+                // If it's an internal page with hash
+                if (href.startsWith('/') && href.includes('#')) {
+                    const [path, hash] = href.split('#');
+                    if (path === window.location.pathname || path === '') {
+                        setTimeout(() => {
+                            const element = document.getElementById(hash);
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 100);
+                    }
+                }
+                // If it's just a hash link
+                else if (href.startsWith('#')) {
+                    const element = document.getElementById(href.substring(1));
+                    if (element) {
+                        setTimeout(() => {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                    }
+                }
+            }
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (navLinks.classList.contains('active') && 
+            !e.target.closest('.navbar') && 
+            !e.target.closest('.nav-links')) {
+            navLinks.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = 'auto';
+        }
+    });
+});
+
+// GOOGLE TRANSLATE CUSTOMIZATION
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle custom language selector
+    const customLangSelect = document.getElementById('customLanguage');
+    if (customLangSelect) {
+        customLangSelect.addEventListener('change', function() {
+            var lang = this.value;
+            
+            // Trigger Google Translate
+            var select = document.querySelector(".goog-te-combo");
+            if (select) {
+                select.value = lang;
+                select.dispatchEvent(new Event("change"));
+            }
+            
+            // Save preference
+            localStorage.setItem("site_lang", lang);
+        });
+        
+        // Load saved language
+        const savedLang = localStorage.getItem("site_lang");
+        if (savedLang) {
+            customLangSelect.value = savedLang;
+            
+            setTimeout(() => {
+                var select = document.querySelector(".goog-te-combo");
+                if (select) {
+                    select.value = savedLang;
+                    select.dispatchEvent(new Event("change"));
+                }
+            }, 1000);
+        }
+    }
+    
+    // Hide Google Translate popup
+    function hideGooglePopup() {
+        const frames = document.getElementsByTagName('iframe');
+        for (let i = 0; i < frames.length; i++) {
+            const f = frames[i];
+            if (f.src.includes('translate.googleapis.com') || 
+                f.className.includes('goog-te-menu-frame')) {
+                f.style.display = "none";
+            }
+        }
+        
+        // Also hide menu container if injected inside body
+        const menu = document.querySelector('.goog-te-menu2');
+        if (menu) {
+            menu.style.display = "none";
+            menu.style.opacity = "0";
+            menu.style.visibility = "hidden";
+        }
+    }
+    
+    // Watch for DOM changes because Google injects iframe dynamically
+    const observer = new MutationObserver(() => hideGooglePopup());
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Run once on load
+    hideGooglePopup();
+});
+</script>

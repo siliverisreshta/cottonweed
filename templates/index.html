@@ -38,7 +38,7 @@
             box-shadow: 0 4px 20px rgba(106, 27, 154, 0.2);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 99999;
         }
 
         .logo {
@@ -766,26 +766,143 @@
                 padding: 1rem;
             }
         }
+
+        /* Google Translate Styles */
+        #google_translate_element {
+            position: fixed;
+            bottom: 5vh;
+            right: 2%;
+            z-index: 1000;
+            background: white;
+            border-radius: 6px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .goog-te-gadget-simple {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        .goog-te-menu-value {
+            color: #333 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 14px !important;
+        }
+
+        /* Hide Google Translate elements */
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+
+        .goog-te-gadget-icon,
+        .goog-te-menu-value,
+        .goog-te-combo {
+            display: none !important;
+        }
+
+        .goog-te-menu-frame,
+        .goog-te-menu2 {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            pointer-events: none !important;
+        }
+
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .title {
+                margin-top: 120px;
+                font-size: 28px;
+            }
+            
+            #google_translate_element {
+                bottom: 10vh;
+                right: 5%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 24px;
+                margin-top: 110px;
+            }
+            
+            #google_translate_element {
+                bottom: 8vh;
+                right: 3%;
+            }
+            
+            .goog-te-menu-value {
+                font-size: 12px !important;
+            }
+        }
     </style>
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,hi,te,ta,bn,gu',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                },
+                'google_translate_element'
+            );
+            
+            // Hide Google Translate elements
+            setTimeout(hideGooglePopup, 1000);
+        }
+        
+        function hideGooglePopup() {
+            const frames = document.getElementsByTagName('iframe');
+            for (let i = 0; i < frames.length; i++) {
+                const f = frames[i];
+                if (f.src.includes('translate.googleapis.com') || 
+                    f.className.includes('goog-te-menu-frame')) {
+                    f.style.display = "none";
+                }
+            }
+            
+            // Also hide menu container if injected inside body
+            const menu = document.querySelector('.goog-te-menu2');
+            if (menu) {
+                menu.style.display = "none";
+                menu.style.opacity = "0";
+                menu.style.visibility = "hidden";
+            }
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">
-            <i class="fas fa-seedling"></i>
-            <span>CottonWeed AI</span>
-        </div>
-        <button class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-links" id="navLinks">
-            <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
-            <a href="#detect"><i class="fas fa-camera"></i> Detect</a>
-            <a href="#features"><i class="fas fa-star"></i> Features</a>
-        </div>
-    </nav>
+    {% include 'partials/nav.html' %}
 
+    <!-- Google Translate Widget -->
+    <div id="google_translate_element"></div>
+    
     <!-- HERO SECTION -->
     <section class="hero">
         <h1>Protect Your Cotton Crops with AI Precision</h1>
@@ -906,17 +1023,14 @@
                 <h3>CottonWeed AI</h3>
                 <p>Revolutionizing cotton farming with artificial intelligence. Our mission is to help farmers protect
                     their crops efficiently and sustainably.</p>
-
             </div>
 
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <a href="#"><i class="fas fa-chevron-right"></i> Home</a>
                 <a href="#detect"><i class="fas fa-chevron-right"></i> Detection</a>
-                <a href="#features"><i class="fas fa-chevron-right"></i> Features</a>
+                <a href="/guide"><i class="fas fa-chevron-right"></i> Weed Guide</a>
             </div>
-
-
         </div>
         <div class="copyright">
             &copy; 2026 CottonWeed Detection AI. All Rights Reserved. | Designed with <i class="fas fa-heart"
@@ -925,6 +1039,44 @@
     </footer>
 
     <script>
+        // Google Translate Customization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Watch for DOM changes because Google injects iframe dynamically
+            const observer = new MutationObserver(() => hideGooglePopup());
+            observer.observe(document.body, { childList: true, subtree: true });
+            
+            // Run once on load
+            hideGooglePopup();
+            
+            // Prevent Google Translate from breaking hover effects
+            setInterval(() => {
+                const highlights = document.querySelectorAll('.goog-text-highlight');
+                highlights.forEach(el => {
+                    el.style.backgroundColor = 'transparent';
+                    el.style.border = 'none';
+                });
+            }, 100);
+        });
+
+        function hideGooglePopup() {
+            const frames = document.getElementsByTagName('iframe');
+            for (let i = 0; i < frames.length; i++) {
+                const f = frames[i];
+                if (f.src.includes('translate.googleapis.com') || 
+                    f.className.includes('goog-te-menu-frame')) {
+                    f.style.display = "none";
+                }
+            }
+            
+            // Also hide menu container if injected inside body
+            const menu = document.querySelector('.goog-te-menu2');
+            if (menu) {
+                menu.style.display = "none";
+                menu.style.opacity = "0";
+                menu.style.visibility = "hidden";
+            }
+        }
+
         // DOM Elements
         const form = document.getElementById('uploadForm');
         const fileUploadBtn = document.getElementById('fileUploadBtn');
@@ -941,27 +1093,9 @@
         const resultDiv = document.getElementById('result');
         const fullImage = document.getElementById('fullImage');
         const loading = document.getElementById('loading');
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-
+      
         // Variables for camera stream management
         let stream = null;
-
-        // Mobile menu toggle
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuToggle.innerHTML = navLinks.classList.contains('active')
-                ? '<i class="fas fa-times"></i>'
-                : '<i class="fas fa-bars"></i>';
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.navbar') && navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            }
-        });
 
         // File upload button
         fileUploadBtn.addEventListener('click', () => {
@@ -969,29 +1103,27 @@
         });
 
         // Show form when file is selected
-       // Show form when file is selected
-document.getElementById('imageFile').addEventListener('change', function () {
-    const file = this.files[0];
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB limit
+        document.getElementById('imageFile').addEventListener('change', function () {
+            const file = this.files[0];
+            const MAX_SIZE = 10 * 1024 * 1024; // 10MB limit
 
-    if (file) {
-        // Validation: If file is larger than 10MB, reject it immediately
-        if (file.size > MAX_SIZE) {
-            alert(`File is too large! Please select an image under 10MB. (Current: ${(file.size / (1024 * 1024)).toFixed(2)}MB)`);
-            this.value = ''; // Clears the selection
-            return; // Stops the function here
-        }
+            if (file) {
+                // Validation: If file is larger than 10MB, reject it immediately
+                if (file.size > MAX_SIZE) {
+                    alert(`File is too large! Please select an image under 10MB. (Current: ${(file.size / (1024 * 1024)).toFixed(2)}MB)`);
+                    this.value = ''; // Clears the selection
+                    return; // Stops the function here
+                }
 
-        // If validation passes, show the UI for analysis
-        form.style.display = 'flex';
-        fileUploadBtn.style.display = 'none';
-        cameraBtn.style.display = 'none';
-    }
-});
+                // If validation passes, show the UI for analysis
+                form.style.display = 'flex';
+                fileUploadBtn.style.display = 'none';
+                cameraBtn.style.display = 'none';
+            }
+        });
 
         // Camera functionality
         cameraBtn.addEventListener('click', async () => {
-
             cameraVideo.classList.remove('camera-hidden');
             try {
                 // Request camera access
@@ -1079,7 +1211,7 @@ document.getElementById('imageFile').addEventListener('change', function () {
 
                         // Full annotated image
                         if (data.image) {
-                            fullImage.src =  data.imageUrl;;
+                            fullImage.src = data.imageUrl;
                             fullImage.style.display = 'block';
                         }
 
@@ -1106,22 +1238,21 @@ document.getElementById('imageFile').addEventListener('change', function () {
                             const div = document.createElement('div');
                             div.className = 'crop-card';
                             div.innerHTML = `
-        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
-        <div class="crop-content">
-            <h4>
-                ${crop.weed_name}
-                <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
-            </h4>
-            <div class="crop-details">
-                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
-                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
-                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
-            </div>
-        </div>
-    `;
+                                <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+                                <div class="crop-content">
+                                    <h4>
+                                        ${crop.weed_name}
+                                        <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+                                    </h4>
+                                    <div class="crop-details">
+                                        <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
+                                        <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
+                                        <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
+                                    </div>
+                                </div>
+                            `;
                             resultDiv.appendChild(div);
                         });
-
 
                         // Reset upload options
                         form.style.display = 'none';
@@ -1187,21 +1318,9 @@ document.getElementById('imageFile').addEventListener('change', function () {
             document.body.style.overflow = 'auto';
         }
 
-        // Form submission (original functionality preserved)
+        // Form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const input = document.getElementById('imageFile');
-
-            input.addEventListener('change', () => {
-                const file = input.files[0];
-                const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-
-                if (file && file.size > MAX_SIZE) {
-                    alert('Image must be under 10MB');
-                    input.value = '';
-                    return;
-                }
-            });
             const fileInput = document.getElementById('imageFile');
             if (!fileInput.files.length) {
                 alert('Please select an image first!');
@@ -1213,13 +1332,12 @@ document.getElementById('imageFile').addEventListener('change', function () {
             resultDiv.innerHTML = '';
             fullImage.style.display = 'none';
 
-            // Simulate API call (replace with your actual endpoint)
+            // Simulate API call
             setTimeout(async () => {
                 try {
                     const formData = new FormData();
                     formData.append('file', fileInput.files[0]);
 
-                    // Replace with your actual endpoint
                     const response = await fetch('/detect_crop', {
                         method: 'POST',
                         body: formData
@@ -1239,7 +1357,6 @@ document.getElementById('imageFile').addEventListener('change', function () {
                     if (data.image) {
                         fullImage.src = data.imageUrl;
                         fullImage.style.display = 'block';
-
                     }
 
                     // Cropped weeds with details
@@ -1258,19 +1375,19 @@ document.getElementById('imageFile').addEventListener('change', function () {
                         const div = document.createElement('div');
                         div.className = 'crop-card';
                         div.innerHTML = `
-        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
-        <div class="crop-content">
-            <h4>
-                ${crop.weed_name}
-                <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
-            </h4>
-            <div class="crop-details">
-                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
-                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
-                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
-            </div>
-        </div>
-    `;
+                            <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+                            <div class="crop-content">
+                                <h4>
+                                    ${crop.weed_name}
+                                    <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+                                </h4>
+                                <div class="crop-details">
+                                    <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
+                                    <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
+                                    <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
+                                </div>
+                            </div>
+                        `;
                         resultDiv.appendChild(div);
                     });
 
@@ -1296,7 +1413,7 @@ document.getElementById('imageFile').addEventListener('change', function () {
                     cameraBtn.style.display = 'flex';
                     document.getElementById('imageFile').value = '';
                 }
-            }, 1500); // Simulated delay
+            }, 1500);
         });
 
         // Smooth scroll for anchor links
@@ -1312,12 +1429,6 @@ document.getElementById('imageFile').addEventListener('change', function () {
                         top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
-
-                    // Close mobile menu if open
-                    if (navLinks.classList.contains('active')) {
-                        navLinks.classList.remove('active');
-                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
                 }
             });
         });
@@ -1331,5 +1442,4 @@ document.getElementById('imageFile').addEventListener('change', function () {
         });
     </script>
 </body>
-
 </html>
