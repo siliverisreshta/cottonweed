@@ -1,41 +1,37 @@
-from flask import Flask, render_template, request, jsonify,url_for
+from flask import Flask, render_template, request, jsonify, url_for
 from ultralytics import YOLO
 import cv2
 import uuid
 import numpy as np
-import base64
 import os
 
 app = Flask(__name__)
 
 # Load YOLOv8 model
-model = YOLO("models/best.pt")
+model = YOLO("models/best_model.pt")
 
 OUTPUT_DIR = "static/output"
 CROP_DIR = "static/crops"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(CROP_DIR, exist_ok=True)
-# Official CottonWeedID class list
+
+# Your trained model's 5 classes (EXACTLY as trained)
 class_names = [
-    "carpetweed", "chickweed", "eclipta", "goosegrass", "morningglory",
-    "palmeramaranth", "purslane", "ragweed", "sicklepod", "spottedspurge",
-    "velvetleaf", "grass"
+    "Palmer_Amaranth",  # Class 0
+    "Waterhemp",        # Class 1
+    "carpetweed",       # Class 2
+    "morning_glory",    # Class 3
+    "nutsedge"          # Class 4
 ]
 
-# Weed information dictionary
+# Weed information for ONLY the 5 classes above
+# Keys MUST match class_names EXACTLY
 weed_info = {
-    "carpetweed": {"damage": "Competes for nutrients, water, sunlight.", "herbicide": "Pendimethalin / Sethoxydim", "details": "Low-growing, spreads in sandy soils."},
-    "chickweed": {"damage": "Forms dense mats, suppressing crop growth.", "herbicide": "2,4-D / Metribuzin", "details": "Cool-season annual, small white flowers."},
-    "eclipta": {"damage": "Competes strongly for water & nutrients.", "herbicide": "Atrazine / Metribuzin", "details": "Annual broadleaf, hairy stems, spreads quickly."},
-    "goosegrass": {"damage": "Reduces crop vigor.", "herbicide": "Oxadiazon / Sethoxydim", "details": "Perennial grass, thrives in compacted soils."},
-    "morningglory": {"damage": "Climbs and smothers crops.", "herbicide": "Glyphosate / Dicamba", "details": "Annual vine with trumpet-shaped flowers."},
-    "palmeramaranth": {"damage": "Highly competitive; can reduce yield up to 80%.", "herbicide": "Dicamba / 2,4-D (for glyphosate-resistant types)", "details": "Fast-growing annual; prolific seed producer."},
-    "purslane": {"damage": "Forms mats, competing for light & nutrients.", "herbicide": "Pendimethalin / 2,4-D", "details": "Prostrate succulent, spreads rapidly."},
-    "ragweed": {"damage": "Competes with crops, produces allergenic pollen.", "herbicide": "Atrazine / 2,4-D", "details": "Annual broadleaf, produces many seeds."},
-    "sicklepod": {"damage": "Reduces yield by competing for nutrients.", "herbicide": "2,4-D / Glyphosate", "details": "Annual legume; sickle-shaped pods."},
-    "spottedspurge": {"damage": "Dense mats compete for nutrients & light.", "herbicide": "Pendimethalin / 2,4-D", "details": "Low-growing succulent with red stems."},
-    "velvetleaf": {"damage": "Aggressive competition; reduces yield.", "herbicide": "Glyphosate / Dicamba", "details": "Tall broadleaf; heart-shaped leaves."},
-    "grass": {"damage": "Competes for nutrients & sunlight.", "herbicide": "Pendimethalin / Sethoxydim", "details": "Generic grassy weeds, grows rapidly."}
+    "Palmer_Amaranth": {"damage": "Competes for nutrients, water, sunlight.", "herbicide": "Pendimethalin / Sethoxydim", "details": "Low-growing, spreads in sandy soils."},
+    "Waterhemp": {"damage": "Forms dense mats, suppressing crop growth.", "herbicide": "2,4-D / Metribuzin", "details": "Cool-season annual, small white flowers."},
+    "carpetweed": {"damage": "Competes strongly for water & nutrients.", "herbicide": "Atrazine / Metribuzin", "details": "Annual broadleaf, hairy stems, spreads quickly."},
+    "morning_glory": {"damage": "Climbs and smothers crops.", "herbicide": "Glyphosate / Dicamba", "details": "Annual vine with trumpet-shaped flowers."},
+    "nutsedge": {"damage": "Reduces crop vigor.", "herbicide": "Oxadiazon / Sethoxydim", "details": "Perennial grass, thrives in compacted soils."}
 }
 
 def crop_and_save(img, boxes, scores, class_ids):
@@ -73,11 +69,10 @@ def index():
 @app.route("/guide")
 def guide():
     return render_template("guide.html", active_page="guide")
+
 @app.route('/ping')
 def fet():
     return "Hello"
-
-
 
 @app.route('/detect_crop', methods=['POST'])
 def detect_crop():
@@ -145,5 +140,3 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     # Must listen on 0.0.0.0 for external access
     app.run(host='0.0.0.0', port=port)
-
-

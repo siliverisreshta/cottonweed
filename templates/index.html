@@ -400,7 +400,40 @@
             font-size: 0.9rem;
             font-weight: 600;
         }
+/* Confidence color coding */
+.confidence.low-confidence {
+    color: #ff9800;  /* Orange for low confidence */
+    font-weight: bold;
+}
 
+.confidence.medium-confidence {
+    color: #2196f3;  /* Blue for medium confidence */
+    font-weight: bold;
+}
+
+.confidence.high-confidence {
+    color: #4CAF50;  /* Green for high confidence */
+    font-weight: bold;
+}
+
+/* Optional: Add background colors for more emphasis */
+.confidence.low-confidence {
+    background-color: #fff3e0;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.confidence.medium-confidence {
+    background-color: #e3f2fd;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.confidence.high-confidence {
+    background-color: #e8f5e9;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
         .crop-details p {
             margin: 8px 0;
             display: flex;
@@ -1147,7 +1180,7 @@
                         loading.style.display = 'none';
 
                         // Full annotated image
-                        if (data.image) {
+                        if (data.imageUrl) {
                             fullImage.src = data.imageUrl;
                             fullImage.style.display = 'block';
                         }
@@ -1171,25 +1204,31 @@
                             return;
                         }
 
-                        data.crops.forEach(crop => {
-                            const div = document.createElement('div');
-                            div.className = 'crop-card';
-                            div.innerHTML = `
-                                <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
-                                <div class="crop-content">
-                                    <h4>
-                                        ${crop.weed_name}
-                                        <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
-                                    </h4>
-                                    <div class="crop-details">
-                                        <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
-                                        <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
-                                        <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
-                                    </div>
-                                </div>
-                            `;
-                            resultDiv.appendChild(div);
-                        });
+                       data.crops.forEach(crop => {
+    const div = document.createElement('div');
+    div.className = 'crop-card';
+    
+    // Determine confidence class
+    let confidenceClass = 'low-confidence';
+    if (crop.confidence > 0.5) confidenceClass = 'high-confidence';
+    else if (crop.confidence > 0.3) confidenceClass = 'medium-confidence';
+    
+    div.innerHTML = `
+        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+        <div class="crop-content">
+            <h4>
+                ${crop.weed_name}
+                <span class="confidence ${confidenceClass}">${(crop.confidence * 100).toFixed(1)}%</span>
+            </h4>
+            <div class="crop-details">
+                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
+                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
+                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
+            </div>
+        </div>
+    `;
+    resultDiv.appendChild(div);
+});
 
                         // Reset upload options
                         form.style.display = 'none';
@@ -1291,7 +1330,7 @@
                     loading.style.display = 'none';
 
                     // Full annotated image
-                    if (data.image) {
+                    if (data.imageUrl) {
                         fullImage.src = data.imageUrl;
                         fullImage.style.display = 'block';
                     }
@@ -1310,6 +1349,10 @@
 
                     data.crops.forEach(crop => {
                         const div = document.createElement('div');
+                         let confidenceClass = 'low-confidence';
+    if (crop.confidence > 0.5) confidenceClass = 'high-confidence';
+    else if (crop.confidence > 0.3) confidenceClass = 'medium-confidence';
+    
                         div.className = 'crop-card';
                         div.innerHTML = `
                             <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
