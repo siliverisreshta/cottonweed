@@ -1,0 +1,26 @@
+TO change Model,
+keep the desired model pickle file (.pt) in models
+and update code in app.py Line 11: filename
+
+
+Old model: (best_model.pt)
+✅ High Accuracy Classes:
+1. Palmer_Amaranth: mAP50 = 0.847 (Excellent)
+2. carpetweed: mAP50 = 0.798 (Good)
+3. nutsedge: mAP50 = 0.813 (Good)
+⚠️ Moderate Accuracy Class:
+4. Waterhemp: mAP50 = 0.69 (Moderate)
+❌ Poor Accuracy Class:
+5. morning_glory: mAP50 = 0.0495 (Very Poor - model struggles with this class)
+It is stopped at 78/100 epoches due to no improvement in training, 
+
+
+Note New model: (best_modelv8.pt)
+1. Palmer_Amaranth: 91.7% 🏆
+2. nutsedge: 88.8% 🥈
+3. carpetweed: 84.3% 🥉
+4. Waterhemp: 74.3% 👍
+5. morning_glory: 6.84% ❌ (data limitation)
+It completed all 100 epoches , Same code rerun 
+
+-- Any confidence in image output is due to poor data availability and GPU limited training.

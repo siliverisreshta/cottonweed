@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # Load YOLOv8 model
-model = YOLO("models/best_model.pt")
+model = YOLO("models/best_modelv8.pt")
 
 OUTPUT_DIR = "static/output"
 CROP_DIR = "static/crops"
