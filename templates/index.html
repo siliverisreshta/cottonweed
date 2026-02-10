@@ -352,99 +352,106 @@
         }
 
         .crops-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: grid;   
+            grid-template-columns: repeat(2, 1fr); /* always 2 boxes per row */
+    
             gap: 25px;
             margin-top: 40px;
         }
 
-        .crop-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(106, 27, 154, 0.1);
-        }
+       /* CROP CARD */
+.crop-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(106, 27, 154, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
 
-        .crop-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(106, 27, 154, 0.15);
-        }
+.crop-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 35px rgba(106, 27, 154, 0.18);
+}
 
-        .crop-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 3px solid #e1bee7;
-        }
+/* CROP IMAGE */
+.crop-img {
+    width: 100%;
+    height: max-content;
+    object-fit: cover;
+    border-bottom: 3px solid #e1bee7;
+}
 
-        .crop-content {
-            padding: 1.5rem;
-        }
+/* CARD CONTENT */
+.crop-content {
+    padding: 1.4rem;
+}
 
-        .crop-content h4 {
-            color: #4a148c;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* TITLE + CONFIDENCE */
+.crop-content h4 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #4a148c;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
 
-        .confidence {
-            background: #e1bee7;
-            color: #4a148c;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-/* Confidence color coding */
+/* CONFIDENCE BADGE */
+.confidence {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+/* Confidence Levels */
 .confidence.low-confidence {
-    color: #ff9800;  /* Orange for low confidence */
-    font-weight: bold;
+    background: #fff3e0;
+    color: #fb8c00;
 }
 
 .confidence.medium-confidence {
-    color: #2196f3;  /* Blue for medium confidence */
-    font-weight: bold;
+    background: #e3f2fd;
+    color: #2196f3;
 }
 
 .confidence.high-confidence {
-    color: #4CAF50;  /* Green for high confidence */
-    font-weight: bold;
+    background: #e8f5e9;
+    color: #43a047;
 }
 
-/* Optional: Add background colors for more emphasis */
-.confidence.low-confidence {
-    background-color: #fff3e0;
-    padding: 2px 8px;
-    border-radius: 12px;
+/* DETAILS INSIDE CARD */
+.crop-details {
+    margin-top: 12px;
+    font-size: 0.95rem;
 }
 
-.confidence.medium-confidence {
-    background-color: #e3f2fd;
-    padding: 2px 8px;
-    border-radius: 12px;
+.crop-details p {
+    margin: 6px 0;
+    color: #555;
+    line-height: 1.4;
 }
 
-.confidence.high-confidence {
-    background-color: #e8f5e9;
-    padding: 2px 8px;
-    border-radius: 12px;
+.crop-details i {
+    color: #6a1b9a;
+    margin-top: 3px; /* Align icon */
+    min-width: 16px;
 }
-        .crop-details p {
-            margin: 8px 0;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
 
-        .crop-details i {
-            color: #6a1b9a;
-            margin-top: 3px;
-        }
+/* Responsive Crop Cards */
+@media(max-width: 600px) {
+    .crop-img {
+        height: 180px;
+    }
+    .crop-content {
+        padding: 1.1rem;
+    }
+    .crop-content h4 {
+        font-size: 1.1rem;
+    }
+}
 
         /* FOOTER */
         footer {
@@ -1009,6 +1016,18 @@
     </footer>
 
     <script>
+function safeJoin(val) {
+    if (!val) return "N/A";
+
+    if (Array.isArray(val)) return val.join(", ");
+
+    if (typeof val === "object")
+        return Object.values(val).join(", ");
+
+    return val;
+}
+
+
         // Google Translate Customization
         document.addEventListener('DOMContentLoaded', function() {
             // Watch for DOM changes because Google injects iframe dynamically
@@ -1212,21 +1231,74 @@
     let confidenceClass = 'low-confidence';
     if (crop.confidence > 0.5) confidenceClass = 'high-confidence';
     else if (crop.confidence > 0.3) confidenceClass = 'medium-confidence';
-    
-    div.innerHTML = `
-        <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
-        <div class="crop-content">
-            <h4>
-                ${crop.weed_name}
-                <span class="confidence ${confidenceClass}">${(crop.confidence * 100).toFixed(1)}%</span>
-            </h4>
-            <div class="crop-details">
-                <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
-                <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
-                <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
-            </div>
+  div.className = 'crop-card';
+div.innerHTML = `
+    <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+
+    <div class="crop-content">
+
+        <h4>
+            ${crop.weed_name}
+            <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+        </h4>
+
+        <div class="crop-details">
+
+            <p><i class="fa-solid fa-seedling"></i>
+                Cotton Seed Fit: ${safeJoin(crop.type_of_cotton_seed)}
+            </p>
+
+            <p><i class="fa-solid fa-leaf"></i>
+                Weed Type: ${crop.type_of_weed}
+            </p>
+
+            <p><i class="fa-solid fa-map"></i>
+                Area of Growth: ${crop.area_of_weed}
+            </p>
+
+            <!-- Duration -->
+            <p><i class="fa-solid fa-calendar"></i>
+                Duration: 
+                ${crop.duration.season} → ${crop.duration.survival}
+                <br/><span class="sub-text">Reason: ${crop.duration.reason}</span>
+            </p>
+
+            <!-- Precautions -->
+            <p><i class="fa-solid fa-shield-halved"></i>
+                Precautions:
+                <br>• Before sason: ${crop.precautions.before_season}
+                <br>• Prediction: ${crop.precautions.prediction}
+                <br>• Field practice: ${crop.precautions.field_practice}
+            </p>
+
+            <!-- Water & Nutrients -->
+            <p><i class="fa-solid fa-droplet"></i>
+                Water Taken: ${crop.consumption.water}
+            </p>
+
+            <p><i class="fa-solid fa-bolt"></i>
+                Nutrient Loss: ${crop.consumption.nutrients}
+            </p>
+
+            <!-- Yield Impact -->
+            <p><i class="fa-solid fa-chart-line"></i>
+                Yield Decrease: ${crop.yield_decrease.percentage}
+                <br><span class="sub-text">Reason: ${crop.yield_decrease.reason}</span>
+            </p>
+
+            <p><i class="fa-solid fa-triangle-exclamation"></i>
+                Drawbacks: ${crop.major_drawbacks}
+            </p>
+
+            <p><i class="fa-solid fa-link"></i>
+                Yield Relation: ${crop.relationship_with_yield}
+            </p>
+
         </div>
-    `;
+    </div>
+`;
+
+
     resultDiv.appendChild(div);
 });
 
@@ -1241,7 +1313,8 @@
                         resultDiv.innerHTML = `
                             <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#d32f2f;">
                                 <i class="fas fa-exclamation-triangle" style="font-size:4rem;"></i>
-                                <h3>Detection Failed</h3>
+                                <h3>Detection F
+                                    ailed</h3>
                                 <p>${error.message}. Please try again with a clearer image.</p>
                             </div>
                         `;
@@ -1352,22 +1425,75 @@
                          let confidenceClass = 'low-confidence';
     if (crop.confidence > 0.5) confidenceClass = 'high-confidence';
     else if (crop.confidence > 0.3) confidenceClass = 'medium-confidence';
-    
+                        console.log(crop)
                         div.className = 'crop-card';
-                        div.innerHTML = `
-                            <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
-                            <div class="crop-content">
-                                <h4>
-                                    ${crop.weed_name}
-                                    <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
-                                </h4>
-                                <div class="crop-details">
-                                    <p><i class="fas fa-skull-crossbones"></i> <b>Damage:</b> ${crop.damage}</p>
-                                    <p><i class="fas fa-flask"></i> <b>Treatment:</b> ${crop.herbicide}</p>
-                                    <p><i class="fas fa-info-circle"></i> <b>Details:</b> ${crop.details}</p>
-                                </div>
-                            </div>
-                        `;
+                       div.className = 'crop-card';
+div.innerHTML = `
+    <img class="crop-img" src="${crop.imageUrl}" alt="${crop.weed_name}">
+
+    <div class="crop-content">
+
+        <h4>
+            ${crop.weed_name}
+            <span class="confidence">${(crop.confidence * 100).toFixed(1)}%</span>
+        </h4>
+
+        <div class="crop-details">
+
+            <p><i class="fa-solid fa-seedling"></i>
+                Cotton Seed Fit: ${safeJoin(crop.type_of_cotton_seed)}
+            </p>
+
+            <p><i class="fa-solid fa-leaf"></i>
+                Weed Type: ${crop.type_of_weed}
+            </p>
+
+            <p><i class="fa-solid fa-map"></i>
+                Area of Growth: ${crop.area_of_weed}
+            </p>
+
+            <!-- Duration -->
+            <p><i class="fa-solid fa-calendar"></i>
+                Duration: 
+                ${crop.duration.season} → ${crop.duration.survival}
+                <br><span class="sub-text">Reason: ${crop.duration.reason}</span>
+            </p>
+
+            <!-- Precautions -->
+            <p><i class="fa-solid fa-shield-halved"></i>
+                Precautions:
+                <br>• Before season: ${crop.precautions.before_season}
+                <br>• Prediction: ${crop.precautions.prediction}
+                <br>• Field practice: ${crop.precautions.field_practice}
+            </p>
+
+            <!-- Water & Nutrients -->
+            <p><i class="fa-solid fa-droplet"></i>
+                Water Taken: ${crop.consumption.water}
+            </p>
+
+            <p><i class="fa-solid fa-bolt"></i>
+                Nutrient Loss: ${crop.consumption.nutrients}
+            </p>
+
+            <!-- Yield Impact -->
+            <p><i class="fa-solid fa-chart-line"></i>
+                Yield Decrease: ${crop.yield_decrease.percentage}
+                <br><span class="sub-text">Reason: ${crop.yield_decrease.reason}</span>
+            </p>
+
+            <p><i class="fa-solid fa-triangle-exclamation"></i>
+                Drawbacks: ${crop.major_drawbacks}
+            </p>
+
+            <p><i class="fa-solid fa-link"></i>
+                Yield Relation: ${crop.relationship_with_yield}
+            </p>
+
+        </div>
+    </div>
+`;
+
                         resultDiv.appendChild(div);
                     });
 
